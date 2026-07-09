@@ -13,6 +13,68 @@ typedef struct Lagu Lagu;
 
 Lagu *head = NULL;
 
+#define NAMA_FILE "playlist.txt"
+
+// Simpan Playlist ke File
+void simpanKeFile() {
+    FILE *fp = fopen(NAMA_FILE, "w");
+
+    if(fp == NULL){
+        printf("\nGagal menyimpan ke file!\n");
+        return;
+    }
+
+    Lagu *temp = head;
+
+    while(temp != NULL){
+        fprintf(fp, "%s\n", temp->judul);
+        fprintf(fp, "%s\n", temp->penyanyi);
+        fprintf(fp, "%d\n", temp->durasi);
+        temp = temp->next;
+    }
+
+    fclose(fp);
+}
+
+// Muat Playlist dari File
+void muatDariFile() {
+    FILE *fp = fopen(NAMA_FILE, "r");
+
+    if(fp == NULL){
+        return;
+    }
+
+    char baris[100];
+
+    while(fgets(baris, sizeof(baris), fp) != NULL){
+        Lagu *baru = (Lagu*)malloc(sizeof(Lagu));
+
+        baris[strcspn(baris, "\n")] = 0;
+        strcpy(baru->judul, baris);
+
+        fgets(baris, sizeof(baris), fp);
+        baris[strcspn(baris, "\n")] = 0;
+        strcpy(baru->penyanyi, baris);
+
+        fgets(baris, sizeof(baris), fp);
+        baru->durasi = atoi(baris);
+
+        baru->next = NULL;
+
+        if(head == NULL){
+            head = baru;
+        } else {
+            Lagu *temp = head;
+            while(temp->next != NULL){
+                temp = temp->next;
+            }
+            temp->next = baru;
+        }
+    }
+
+    fclose(fp);
+}
+
 // Tambah Lagu
 void tambahLagu() {
     Lagu *baru = (Lagu*)malloc(sizeof(Lagu));
@@ -42,6 +104,7 @@ void tambahLagu() {
         temp->next = baru;
     }
 
+    simpanKeFile();
     printf("\nLagu berhasil ditambahkan!\n");
 }
 
@@ -90,6 +153,53 @@ void cariLagu() {
     printf("\nLagu tidak ditemukan.\n");
 }
 
+// Update Lagu
+void updateLagu() {
+    char cari[100];
+
+    if(head == NULL){
+        printf("\nPlaylist masih kosong!\n");
+        return;
+    }
+
+    printf("\nMasukkan Judul Lagu yang ingin diupdate: ");
+    getchar();
+    fgets(cari, sizeof(cari), stdin);
+    cari[strcspn(cari, "\n")] = 0;
+
+    Lagu *temp = head;
+
+    while(temp != NULL && strcmp(temp->judul, cari) != 0){
+        temp = temp->next;
+    }
+
+    if(temp == NULL){
+        printf("\nLagu tidak ditemukan.\n");
+        return;
+    }
+
+    printf("\nData lama:\n");
+    printf("Judul    : %s\n", temp->judul);
+    printf("Penyanyi : %s\n", temp->penyanyi);
+    printf("Durasi   : %d menit\n", temp->durasi);
+
+    printf("\nMasukkan data baru\n");
+
+    printf("Judul Lagu    : ");
+    fgets(temp->judul, sizeof(temp->judul), stdin);
+    temp->judul[strcspn(temp->judul, "\n")] = 0;
+
+    printf("Nama Penyanyi : ");
+    fgets(temp->penyanyi, sizeof(temp->penyanyi), stdin);
+    temp->penyanyi[strcspn(temp->penyanyi, "\n")] = 0;
+
+    printf("Durasi (menit): ");
+    scanf("%d", &temp->durasi);
+
+    simpanKeFile();
+    printf("\nLagu berhasil diupdate!\n");
+}
+
 // Hapus Lagu
 void hapusLagu() {
     char hapus[100];
@@ -120,12 +230,83 @@ void hapusLagu() {
 
     free(temp);
 
+    simpanKeFile();
     printf("\nLagu berhasil dihapus.\n");
+}
+
+// Sorting berdasarkan Judul (A-Z)
+void sortingJudul() {
+    if(head == NULL || head->next == NULL){
+        printf("\nData tidak cukup untuk disorting!\n");
+        return;
+    }
+
+    Lagu *i, *j;
+
+    for(i = head; i->next != NULL; i = i->next){
+        for(j = head; j->next != NULL; j = j->next){
+            if(strcmp(j->judul, j->next->judul) > 0){
+                char tempJudul[100], tempPenyanyi[100];
+                int tempDurasi;
+
+                strcpy(tempJudul, j->judul);
+                strcpy(tempPenyanyi, j->penyanyi);
+                tempDurasi = j->durasi;
+
+                strcpy(j->judul, j->next->judul);
+                strcpy(j->penyanyi, j->next->penyanyi);
+                j->durasi = j->next->durasi;
+
+                strcpy(j->next->judul, tempJudul);
+                strcpy(j->next->penyanyi, tempPenyanyi);
+                j->next->durasi = tempDurasi;
+            }
+        }
+    }
+
+    simpanKeFile();
+    printf("\nPlaylist berhasil diurutkan berdasarkan judul!\n");
+}
+
+// Sorting berdasarkan Durasi (terkecil ke terbesar)
+void sortingDurasi() {
+    if(head == NULL || head->next == NULL){
+        printf("\nData tidak cukup untuk disorting!\n");
+        return;
+    }
+
+    Lagu *i, *j;
+
+    for(i = head; i->next != NULL; i = i->next){
+        for(j = head; j->next != NULL; j = j->next){
+            if(j->durasi > j->next->durasi){
+                char tempJudul[100], tempPenyanyi[100];
+                int tempDurasi;
+
+                strcpy(tempJudul, j->judul);
+                strcpy(tempPenyanyi, j->penyanyi);
+                tempDurasi = j->durasi;
+
+                strcpy(j->judul, j->next->judul);
+                strcpy(j->penyanyi, j->next->penyanyi);
+                j->durasi = j->next->durasi;
+
+                strcpy(j->next->judul, tempJudul);
+                strcpy(j->next->penyanyi, tempPenyanyi);
+                j->next->durasi = tempDurasi;
+            }
+        }
+    }
+
+    simpanKeFile();
+    printf("\nPlaylist berhasil diurutkan berdasarkan durasi!\n");
 }
 
 int main() {
 
     int pilih;
+
+    muatDariFile();
 
     do{
         printf("\n=============================\n");
@@ -134,8 +315,11 @@ int main() {
         printf("1. Tambah Lagu\n");
         printf("2. Tampilkan Playlist\n");
         printf("3. Cari Lagu\n");
-        printf("4. Hapus Lagu\n");
-        printf("5. Keluar\n");
+        printf("4. Update Lagu\n");
+        printf("5. Hapus Lagu\n");
+        printf("6. Sorting Judul\n");
+        printf("7. Sorting Durasi\n");
+        printf("8. Keluar\n");
         printf("=============================\n");
         printf("Pilih Menu : ");
         scanf("%d",&pilih);
@@ -155,10 +339,22 @@ int main() {
             break;
 
         case 4:
-            hapusLagu();
+            updateLagu();
             break;
 
         case 5:
+            hapusLagu();
+            break;
+
+        case 6:
+            sortingJudul();
+            break;
+
+        case 7:
+            sortingDurasi();
+            break;
+
+        case 8:
             printf("\nTerima kasih telah menggunakan Music Playlist Manager.\n");
             break;
 
@@ -166,7 +362,7 @@ int main() {
             printf("\nMenu tidak tersedia!\n");
         }
 
-    }while(pilih != 5);
+    }while(pilih != 8);
 
     return 0;
 }
