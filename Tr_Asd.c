@@ -5,6 +5,7 @@
 struct Lagu {
     char judul[100];
     char penyanyi[100];
+    char album[100];
     int durasi;
     struct Lagu *next;
 };
@@ -29,6 +30,7 @@ void simpanfile() {
     while(temp != NULL){
         fprintf(fp, "%s\n", temp->judul);
         fprintf(fp, "%s\n", temp->penyanyi);
+        fprintf(fp, "%s\n", temp->album);
         fprintf(fp, "%d\n", temp->durasi);
         temp = temp->next;
     }
@@ -55,6 +57,10 @@ void muatdarifile() {
         fgets(baris, sizeof(baris), fp);
         baris[strcspn(baris, "\n")] = 0;
         strcpy(baru->penyanyi, baris);
+
+        fgets(baris, sizeof(baris), fp);
+        baris[strcspn(baris, "\n")] = 0;
+        strcpy(baru->album, baris);
 
         fgets(baris, sizeof(baris), fp);
         baru->durasi = atoi(baris);
@@ -88,6 +94,10 @@ void tambahlagu() {
     printf("Nama Penyanyi : ");
     fgets(baru->penyanyi, sizeof(baru->penyanyi), stdin);
     baru->penyanyi[strcspn(baru->penyanyi, "\n")] = 0;
+
+    printf("Nama Album    : ");
+    fgets(baru->album, sizeof(baru->album), stdin);
+    baru->album[strcspn(baru->album, "\n")] = 0;
 
     printf("Durasi (menit): ");
     scanf("%d", &baru->durasi);
@@ -123,6 +133,7 @@ void tampilplaylist() {
     while(temp != NULL){
         printf("%d. %s\n", no++, temp->judul);
         printf("   Penyanyi : %s\n", temp->penyanyi);
+        printf("   Album    : %s\n", temp->album);
         printf("   Durasi   : %d menit\n\n", temp->durasi);
         temp = temp->next;
     }
@@ -144,6 +155,7 @@ void carilagu() {
             printf("\nLagu ditemukan!\n");
             printf("Judul    : %s\n", temp->judul);
             printf("Penyanyi : %s\n", temp->penyanyi);
+            printf("Album    : %s\n", temp->album);
             printf("Durasi   : %d menit\n", temp->durasi);
             return;
         }
@@ -181,6 +193,7 @@ void updatelagu() {
     printf("\nData lama:\n");
     printf("Judul    : %s\n", temp->judul);
     printf("Penyanyi : %s\n", temp->penyanyi);
+    printf("Album    : %s\n", temp->album);
     printf("Durasi   : %d menit\n", temp->durasi);
 
     printf("\nMasukkan data baru\n");
@@ -192,6 +205,10 @@ void updatelagu() {
     printf("Nama Penyanyi : ");
     fgets(temp->penyanyi, sizeof(temp->penyanyi), stdin);
     temp->penyanyi[strcspn(temp->penyanyi, "\n")] = 0;
+
+    printf("Nama Album    : ");
+    fgets(temp->album, sizeof(temp->album), stdin);
+    temp->album[strcspn(temp->album, "\n")] = 0;
 
     printf("Durasi (menit): ");
     scanf("%d", &temp->durasi);
@@ -226,6 +243,7 @@ void hapuslagu() {
     printf("\nData Lagu\n");
     printf("judul    : %s\n", temp->judul);
     printf("Penyanyi : %s\n", temp->penyanyi);
+    printf("Album    : %s\n", temp->album);
     printf("Durasi   : %d menit\n", temp->durasi);
 
     printf("Yakin ingin menghapus lagu ini? (y/t): ");
@@ -262,19 +280,22 @@ void sortingjudul() {
     for(i = head; i->next != NULL; i = i->next){
         for(j = head; j->next != NULL; j = j->next){
             if(strcmp(j->judul, j->next->judul) > 0){
-                char tempJudul[100], tempPenyanyi[100];
+                char tempJudul[100], tempPenyanyi[100], tempAlbum[100];
                 int tempDurasi;
 
                 strcpy(tempJudul, j->judul);
                 strcpy(tempPenyanyi, j->penyanyi);
+                strcpy(tempAlbum, j->album);
                 tempDurasi = j->durasi;
 
                 strcpy(j->judul, j->next->judul);
                 strcpy(j->penyanyi, j->next->penyanyi);
+                strcpy(j->album, j->next->album);
                 j->durasi = j->next->durasi;
 
                 strcpy(j->next->judul, tempJudul);
                 strcpy(j->next->penyanyi, tempPenyanyi);
+                strcpy(j->next->album, tempAlbum);
                 j->next->durasi = tempDurasi;
             }
         }
