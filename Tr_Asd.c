@@ -15,8 +15,8 @@ Lagu *head = NULL;
 
 #define NAMA_FILE "playlist.txt"
 
-// Simpan Playlist ke File
-void simpanKeFile() {
+//Menyimpan Palylist ke File
+void simpanfile() {
     FILE *fp = fopen(NAMA_FILE, "w");
 
     if(fp == NULL){
@@ -37,7 +37,7 @@ void simpanKeFile() {
 }
 
 // Muat Playlist dari File
-void muatDariFile() {
+void muatdarifile() {
     FILE *fp = fopen(NAMA_FILE, "r");
 
     if(fp == NULL){
@@ -76,7 +76,7 @@ void muatDariFile() {
 }
 
 // Tambah Lagu
-void tambahLagu() {
+void tambahlagu() {
     Lagu *baru = (Lagu*)malloc(sizeof(Lagu));
 
     printf("\n=== Tambah Lagu ===\n");
@@ -104,12 +104,12 @@ void tambahLagu() {
         temp->next = baru;
     }
 
-    simpanKeFile();
+    simpanfile();
     printf("\nLagu berhasil ditambahkan!\n");
 }
 
 // Tampilkan Playlist
-void tampilPlaylist() {
+void tampilplaylist() {
     Lagu *temp = head;
 
     if(head == NULL){
@@ -129,7 +129,7 @@ void tampilPlaylist() {
 }
 
 // Cari Lagu
-void cariLagu() {
+void carilagu() {
     char cari[100];
 
     printf("\nMasukkan Judul Lagu: ");
@@ -154,7 +154,7 @@ void cariLagu() {
 }
 
 // Update Lagu
-void updateLagu() {
+void updatelagu() {
     char cari[100];
 
     if(head == NULL){
@@ -196,12 +196,12 @@ void updateLagu() {
     printf("Durasi (menit): ");
     scanf("%d", &temp->durasi);
 
-    simpanKeFile();
+    simpanfile();
     printf("\nLagu berhasil diupdate!\n");
 }
 
 // Hapus Lagu
-void hapusLagu() {
+void hapuslagu() {
     char hapus[100];
 
     printf("\nMasukkan Judul Lagu yang ingin dihapus: ");
@@ -230,12 +230,12 @@ void hapusLagu() {
 
     free(temp);
 
-    simpanKeFile();
+    simpanfile();
     printf("\nLagu berhasil dihapus.\n");
 }
 
 // Sorting berdasarkan Judul (A-Z)
-void sortingJudul() {
+void sortingjudul() {
     if(head == NULL || head->next == NULL){
         printf("\nData tidak cukup untuk disorting!\n");
         return;
@@ -264,12 +264,12 @@ void sortingJudul() {
         }
     }
 
-    simpanKeFile();
+    simpanfile();
     printf("\nPlaylist berhasil diurutkan berdasarkan judul!\n");
 }
 
 // Sorting berdasarkan Durasi (terkecil ke terbesar)
-void sortingDurasi() {
+void sortingdurasi() {
     if(head == NULL || head->next == NULL){
         printf("\nData tidak cukup untuk disorting!\n");
         return;
@@ -298,7 +298,7 @@ void sortingDurasi() {
         }
     }
 
-    simpanKeFile();
+    simpanfile();
     printf("\nPlaylist berhasil diurutkan berdasarkan durasi!\n");
 }
 
@@ -306,12 +306,12 @@ int main() {
 
     int pilih;
 
-    muatDariFile();
+    muatdarifile();
 
     do{
-        printf("\n=============================\n");
-        printf("     MUSIC PLAYLIST MANAGER\n");
-        printf("=============================\n");
+        printf("\n==============================\n");
+        printf("||  MUSIC PLAYLIST MANAGER  ||\n");
+        printf("==============================\n");
         printf("1. Tambah Lagu\n");
         printf("2. Tampilkan Playlist\n");
         printf("3. Cari Lagu\n");
@@ -327,31 +327,31 @@ int main() {
         switch(pilih){
 
         case 1:
-            tambahLagu();
+            tambahlagu();
             break;
 
         case 2:
-            tampilPlaylist();
+            tampilplaylist();
             break;
 
         case 3:
-            cariLagu();
+            carilagu();
             break;
 
         case 4:
-            updateLagu();
+            updatelagu();
             break;
 
         case 5:
-            hapusLagu();
+            hapuslagu();
             break;
 
         case 6:
-            sortingJudul();
+            sortingjudul();
             break;
 
         case 7:
-            sortingDurasi();
+            sortingdurasi();
             break;
 
         case 8:
