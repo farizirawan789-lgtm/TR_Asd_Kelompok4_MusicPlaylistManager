@@ -172,20 +172,24 @@ void tampilplaylist() {
     printf("===============================================================\n");
 
     int no = 1;
+    int total_durasi = 0;
 
     while(temp != NULL){
-        printf("Lagu ke-%d\n", no++);
-        printf("---------------------------------------------------------------\n");
+        printf("  # Lagu ke-%d\n", no++);
+//      printf("---------------------------------------------------------------\n");
         printf("|| Judul     : %s\n", temp->judul);
         printf("|| Penyanyi  : %s\n", temp->penyanyi);
         printf("|| Album     : %s\n", temp->album);
         printf("|| Durasi    : %d menit\n", temp->durasi);
-        printf("---------------------------------------------------------------\n\n");
+        printf("\n");
+//      printf("---------------------------------------------------------------\n\n");
 
+        total_durasi += temp->durasi;
         temp = temp->next;
     }
     printf("===============================================================\n");
     printf("Total Lagu : %d\n", no - 1);
+    printf("Total Durasi : %d menit\n", total_durasi);
 }
 
 // Cari Lagu
@@ -199,7 +203,7 @@ void carilagu() {
     Lagu *temp = head;
 
     while(temp != NULL){
-        if(strcmp(temp->judul, cari) == 0){
+        if(strcasecmp(temp->judul, cari) == 0 || strcasecmp(temp->penyanyi, cari) == 0){ //Ganti string ke string case compare supaya tidak case sensitive
             printf("\nLagu ditemukan!\n");
             printf("Judul    : %s\n", temp->judul);
             printf("Penyanyi : %s\n", temp->penyanyi);
@@ -209,8 +213,7 @@ void carilagu() {
         }
         temp = temp->next;
     }
-
-    printf("\nLagu tidak ditemukan.\n");
+    printf("\nLagu dengan Judul atau Penyanyi tersebut tidak ditemukan\n");
 }
 
 // Update Lagu
@@ -294,6 +297,9 @@ void hapuslagu() {
     printf("Yakin ingin menghapus lagu ini? (y/t): ");
     scanf(" %c",&yakin);
 
+//    while(getchar() != '\n');
+
+
     if(yakin == 'y' || yakin == 'Y'){
     }else{
         printf("Penghapusan dibatalkan.\n");
@@ -362,19 +368,22 @@ void sortingdurasi() {
     for(i = head; i->next != NULL; i = i->next){
         for(j = head; j->next != NULL; j = j->next){
             if(j->durasi > j->next->durasi){
-                char tempJudul[100], tempPenyanyi[100];
+                char tempJudul[100], tempPenyanyi[100], tempAlbum[100];
                 int tempDurasi;
 
                 strcpy(tempJudul, j->judul);
                 strcpy(tempPenyanyi, j->penyanyi);
+                strcpy(tempAlbum, j->album);
                 tempDurasi = j->durasi;
 
                 strcpy(j->judul, j->next->judul);
                 strcpy(j->penyanyi, j->next->penyanyi);
+                strcpy(j->album, j->next->album);
                 j->durasi = j->next->durasi;
 
                 strcpy(j->next->judul, tempJudul);
                 strcpy(j->next->penyanyi, tempPenyanyi);
+                strcpy(j->next->album, tempAlbum);
                 j->next->durasi = tempDurasi;
             }
         }
