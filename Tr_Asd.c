@@ -203,6 +203,7 @@ void updatelagu() {
 // Hapus Lagu
 void hapuslagu() {
     char hapus[100];
+    char yakin;
 
     printf("\nMasukkan Judul Lagu yang ingin dihapus: ");
     getchar();
@@ -221,6 +222,21 @@ void hapuslagu() {
         printf("\nLagu tidak ditemukan.\n");
         return;
     }
+
+    printf("\nData Lagu\n");
+    printf("judul    : %s\n", temp->judul);
+    printf("Penyanyi : %s\n", temp->penyanyi);
+    printf("Durasi   : %d menit\n", temp->durasi);
+
+    printf("Yakin ingin menghapus lagu ini? (y/t): ");
+    scanf(" %c",&yakin);
+
+    if(yakin == 'y' || yakin == 'Y'){
+    }else{
+        printf("Penghapusan dibatalkan.\n");
+        return;
+    }
+
 
     if(prev == NULL){
         head = temp->next;
