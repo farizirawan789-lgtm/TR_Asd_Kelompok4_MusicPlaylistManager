@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 struct Lagu {
     char judul[100];
@@ -15,6 +16,45 @@ typedef struct Lagu Lagu;
 Lagu *head = NULL;
 
 #define NAMA_FILE "playlist.txt"
+
+//proteksi input
+int inputangkanah(char pesan[], int min, int max){
+    char input[100];
+    int angka;
+    int i;
+
+    while(1){
+        printf("%s", pesan);
+
+        fgets(input, sizeof(input), stdin);
+        input[strcspn(input, "\n")] = 0;
+
+        if(strlen(input) == 0){
+            printf("Input tidak boleh kosong!\n");
+            continue;
+        }
+
+        for(i = 0; input[i] != '\0'; i++){
+            if(!isdigit(input[i])){
+                printf("Input harus berupa angka!\n");
+                break;
+            }
+        }
+
+        if(input[i] != '\0'){
+            continue;
+        }
+
+        angka = atoi(input);
+
+        if(angka < min || angka > max){
+            printf("Input harus antara %d sampai %d!\n", min, max);
+            continue;
+        }
+
+        return angka;
+    }
+}
 
 //Menyimpan Palylist ke File
 void simpanfile() {
@@ -87,7 +127,6 @@ void tambahlagu() {
 
     printf("\n=== Tambah Lagu ===\n");
     printf("Judul Lagu    : ");
-    getchar();
     fgets(baru->judul, sizeof(baru->judul), stdin);
     baru->judul[strcspn(baru->judul, "\n")] = 0;
 
@@ -99,8 +138,7 @@ void tambahlagu() {
     fgets(baru->album, sizeof(baru->album), stdin);
     baru->album[strcspn(baru->album, "\n")] = 0;
 
-    printf("Durasi (menit): ");
-    scanf("%d", &baru->durasi);
+    baru->durasi = inputangka("Durasi (menit): ", 1, 100);
 
     baru->next = NULL;
 
@@ -123,20 +161,31 @@ void tampilplaylist() {
     Lagu *temp = head;
 
     if(head == NULL){
-        printf("\nPlaylist masih kosong!\n");
+        printf("\n============================================\n");
+        printf("          PLAYLIST MASIH KOSONG\n");
+        printf("============================================\n");
         return;
     }
 
-    printf("\n===== PLAYLIST =====\n");
+    printf("\n===============================================================\n");
+    printf("                         DAFTAR PLAYLIST\n");
+    printf("===============================================================\n");
 
     int no = 1;
+
     while(temp != NULL){
-        printf("%d. %s\n", no++, temp->judul);
-        printf("   Penyanyi : %s\n", temp->penyanyi);
-        printf("   Album    : %s\n", temp->album);
-        printf("   Durasi   : %d menit\n\n", temp->durasi);
+        printf("Lagu ke-%d\n", no++);
+        printf("---------------------------------------------------------------\n");
+        printf("|| Judul     : %s\n", temp->judul);
+        printf("|| Penyanyi  : %s\n", temp->penyanyi);
+        printf("|| Album     : %s\n", temp->album);
+        printf("|| Durasi    : %d menit\n", temp->durasi);
+        printf("---------------------------------------------------------------\n\n");
+
         temp = temp->next;
     }
+    printf("===============================================================\n");
+    printf("Total Lagu : %d\n", no - 1);
 }
 
 // Cari Lagu
@@ -144,7 +193,6 @@ void carilagu() {
     char cari[100];
 
     printf("\nMasukkan Judul Lagu: ");
-    getchar();
     fgets(cari, sizeof(cari), stdin);
     cari[strcspn(cari, "\n")] = 0;
 
@@ -175,7 +223,6 @@ void updatelagu() {
     }
 
     printf("\nMasukkan Judul Lagu yang ingin diupdate: ");
-    getchar();
     fgets(cari, sizeof(cari), stdin);
     cari[strcspn(cari, "\n")] = 0;
 
@@ -210,8 +257,7 @@ void updatelagu() {
     fgets(temp->album, sizeof(temp->album), stdin);
     temp->album[strcspn(temp->album, "\n")] = 0;
 
-    printf("Durasi (menit): ");
-    scanf("%d", &temp->durasi);
+    temp->durasi = inputangka("Durasi (menit): ", 1, 100);
 
     simpanfile();
     printf("\nLagu berhasil diupdate!\n");
@@ -223,7 +269,6 @@ void hapuslagu() {
     char yakin;
 
     printf("\nMasukkan Judul Lagu yang ingin dihapus: ");
-    getchar();
     fgets(hapus, sizeof(hapus), stdin);
     hapus[strcspn(hapus, "\n")] = 0;
 
@@ -358,8 +403,7 @@ int main() {
         printf("7. Sorting Durasi\n");
         printf("8. Keluar\n");
         printf("=============================\n");
-        printf("Pilih Menu : ");
-        scanf("%d",&pilih);
+        pilih = inputangka("Pilih Menu : ", 1, 8);
 
         switch(pilih){
 
