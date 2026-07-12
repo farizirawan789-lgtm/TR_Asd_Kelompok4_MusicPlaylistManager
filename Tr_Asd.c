@@ -18,7 +18,7 @@ Lagu *head = NULL;
 #define NAMA_FILE "playlist.txt"
 
 //proteksi input
-int inputangkanah(char pesan[], int min, int max){
+int inputangka (char pesan[], int min, int max){
     char input[100];
     int angka;
     int i;
