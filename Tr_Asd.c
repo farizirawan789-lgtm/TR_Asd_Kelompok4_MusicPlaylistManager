@@ -17,12 +17,12 @@ Lagu *head = NULL;
 
 #define NAMA_FILE "playlist.txt"
 
-/* Fungsi untuk menahan layar dan menunggu input enter dari pengguna */
+/* nahan layar dan menunggu input enter dari pengguna */
 void tunggu_enter() {
     getchar();
 }
 
-/* Fungsi untuk memvalidasi dan mengamankan input berupa angka dalam rentang tertentu */
+/* validasi dan mengamankan input berupa angka dalam rentang tertentu */
 int inputangka (char pesan[], int min, int max){
     char input[100];
     int angka;
@@ -60,7 +60,7 @@ int inputangka (char pesan[], int min, int max){
     }
 }
 
-/* Fungsi untuk memvalidasi dan mengamankan input berupa angka desimal (float) */
+/* validasi dan mengamankan input berupa angka desimal (float) */
 float inputfloat(char pesan[], float min, float max) {
     char input[100];
     float angka;
@@ -90,7 +90,7 @@ float inputfloat(char pesan[], float min, float max) {
     }
 }
 
-/* Fungsi untuk memvalidasi input teks agar tidak boleh kosong */
+/* validasi input teks agar tidak boleh kosong */
 void inputteks(char pesan[], char target[], int ukuran) {
     while(1) {
         printf("%s", pesan);
@@ -105,7 +105,7 @@ void inputteks(char pesan[], char target[], int ukuran) {
     }
 }
 
-/* Fungsi untuk menyimpan seluruh data linked list lagu ke dalam file teks */
+/*simpan seluruh data linked list lagu ke dalam file teks */
 void simpanfile() {
     FILE *fp = fopen(NAMA_FILE, "w");
 
@@ -125,7 +125,7 @@ void simpanfile() {
     fclose(fp);
 }
 
-/* Fungsi untuk memuat data lagu dari file teks ke dalam struktur linked list saat program dimulai */
+/* memuat data lagu dari file teks ke dalam struktur linked list saat program dimulai */
 void muatdarifile() {
     FILE *fp = fopen(NAMA_FILE, "r");
 
@@ -166,7 +166,7 @@ void muatdarifile() {
     fclose(fp);
 }
 
-/* Fungsi untuk menambahkan data lagu baru ke urutan terakhir linked list */
+/*tambahkan data lagu baru ke urutan terakhir linked list */
 void tambahlagu() {
     system("cls");
     Lagu *baru = (Lagu*)malloc(sizeof(Lagu));
@@ -194,7 +194,7 @@ void tambahlagu() {
     tunggu_enter();
 }
 
-/* Fungsi untuk menampilkan seluruh daftar lagu yang tersimpan beserta total durasi playlist */
+/*tampilkan seluruh daftar lagu yang tersimpan beserta total durasi playlist */
 void tampilplaylist() {
     system("cls");
     Lagu *temp = head;
@@ -231,12 +231,12 @@ void tampilplaylist() {
     tunggu_enter();
 }
 
-/* Fungsi untuk mencari lagu berdasarkan judul atau penyanyi secara case-insensitive */
+/* cari lagu berdasarkan judul atau penyanyi  */
 void carilagu() {
     system("cls");
     char cari[100];
 
-    inputteks("\nMasukkan Judul Lagu: ", cari, sizeof(cari));
+    inputteks("\nMasukkan Judul Lagu atau Nama Penyanyi: ", cari, sizeof(cari));
 
     Lagu *temp = head;
     while(temp != NULL){
@@ -256,7 +256,7 @@ void carilagu() {
     tunggu_enter();
 }
 
-/* Fungsi untuk mengubah atau memperbarui informasi data lagu lama berdasarkan judul */
+/*  edit informasi data lagu lama berdasarkan judul */
 void updatelagu() {
     system("cls");
     char cari[100];
@@ -297,7 +297,7 @@ void updatelagu() {
     tunggu_enter();
 }
 
-/* Fungsi untuk menghapus data lagu tertentu dari linked list berdasarkan judul setelah konfirmasi konfirmasi */
+/* hapus data lagu tertentu dari linked list dari judul setelah konfirmasi */
 void hapuslagu() {
     char hapus[100];
     char yakin;
@@ -347,7 +347,7 @@ void hapuslagu() {
     }
 }
 
-/* Fungsi untuk mengurutkan daftar lagu berdasarkan alfabet Judul secara ascending (A-Z) */
+/* urutkan daftar lagu berdasarkan alfabet Judul secara ascending (A-Z) */
 void sortingjudul() {
     system("cls");
     if(head == NULL || head->next == NULL){
@@ -386,7 +386,7 @@ void sortingjudul() {
     tunggu_enter();
 }
 
-/* Fungsi untuk mengurutkan daftar lagu berdasarkan durasi terkecil ke terbesar */
+/* urutkan daftar lagu berdasarkan durasi terkecil ke terbesar */
 void sortingdurasi() {
     system("cls");
     if(head == NULL || head->next == NULL){
