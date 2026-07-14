@@ -266,7 +266,6 @@ void updatelagu() {
     printf("\nLagu berhasil diupdate!\n");
 }
 
-// Hapus Lagu
 void hapuslagu() {
     char hapus[100];
     char yakin;
@@ -295,9 +294,8 @@ void hapuslagu() {
     printf("Durasi   : %d menit\n", temp->durasi);
 
     printf("Yakin ingin menghapus lagu ini? (y/t): ");
-    scanf(" %c",&yakin);
-
-//    while(getchar() != '\n');
+    scanf("%c",&yakin);
+    while(getchar() != '\n');
 
 
     if(yakin == 'y' || yakin == 'Y'){
@@ -456,3 +454,9 @@ int main() {
 
     return 0;
 }
+
+
+// tambah sleep diakhir pas mau keluar kasih 3 atau 2.5 detik sj
+// tambah CLS
+// tambah proteksi untuk huruf juga
+// ganti album jadi genre sj supaya kalau lagu yg single nggk usah repot
