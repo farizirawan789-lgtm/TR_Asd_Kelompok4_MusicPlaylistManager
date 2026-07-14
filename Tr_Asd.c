@@ -1,3 +1,13 @@
+/* Anggota Kelompok Music Playlist Manager 
+1. Afran Fariz Irawan (672025077) dari kelas ASD F kak cheryl 
+2. Arga Modza Sentosa (672025079) dari kelas ASD F kak cheryl
+3. Kris Tri Timotius Satya Koibur (672025090) dari kelas ASD F kak cheryl
+4. William Bernard (672025086) dari kelas ASD D
+*/
+
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
