@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <windows.h>
 
 struct Lagu {
     char judul[100];
     char penyanyi[100];
-    char album[100];
+    char genre[100];
     int durasi;
     struct Lagu *next;
 };
@@ -17,7 +18,11 @@ Lagu *head = NULL;
 
 #define NAMA_FILE "playlist.txt"
 
-//proteksi input
+void tunggu_enter() {
+    getchar();
+}
+
+//proteksi input digit
 int inputangka (char pesan[], int min, int max){
     char input[100];
     int angka;
@@ -56,6 +61,24 @@ int inputangka (char pesan[], int min, int max){
     }
 }
 
+// proteksi input teks
+void inputteks(char pesan[], char target[], int ukuran) {
+    while(1) {
+        printf("%s", pesan);
+
+        fgets(target, ukuran, stdin);
+        target[strcspn(target, "\n")] = 0; // Menghapus enter di ujung string
+
+        // Meniru proteksi kamu: Cek jika user cuma pencet enter (kosong)
+        if(strlen(target) == 0) {
+            printf("Input tidak boleh kosong!\n");
+            continue; // Ulangi lagi sampai diisi
+        }
+
+        break; // Jika ada isinya, keluar dari loop
+    }
+}
+
 //Menyimpan Palylist ke File
 void simpanfile() {
     FILE *fp = fopen(NAMA_FILE, "w");
@@ -70,7 +93,7 @@ void simpanfile() {
     while(temp != NULL){
         fprintf(fp, "%s\n", temp->judul);
         fprintf(fp, "%s\n", temp->penyanyi);
-        fprintf(fp, "%s\n", temp->album);
+        fprintf(fp, "%s\n", temp->genre);
         fprintf(fp, "%d\n", temp->durasi);
         temp = temp->next;
     }
@@ -100,7 +123,7 @@ void muatdarifile() {
 
         fgets(baris, sizeof(baris), fp);
         baris[strcspn(baris, "\n")] = 0;
-        strcpy(baru->album, baris);
+        strcpy(baru->genre, baris);
 
         fgets(baris, sizeof(baris), fp);
         baru->durasi = atoi(baris);
@@ -123,21 +146,13 @@ void muatdarifile() {
 
 // Tambah Lagu
 void tambahlagu() {
+    system("cls");
     Lagu *baru = (Lagu*)malloc(sizeof(Lagu));
 
     printf("\n=== Tambah Lagu ===\n");
-    printf("Judul Lagu    : ");
-    fgets(baru->judul, sizeof(baru->judul), stdin);
-    baru->judul[strcspn(baru->judul, "\n")] = 0;
-
-    printf("Nama Penyanyi : ");
-    fgets(baru->penyanyi, sizeof(baru->penyanyi), stdin);
-    baru->penyanyi[strcspn(baru->penyanyi, "\n")] = 0;
-
-    printf("Nama Album    : ");
-    fgets(baru->album, sizeof(baru->album), stdin);
-    baru->album[strcspn(baru->album, "\n")] = 0;
-
+    inputteks("Judul Lagu    : ", baru->judul, sizeof(baru->judul));
+    inputteks("Nama Penyanyi : ", baru->penyanyi, sizeof(baru->penyanyi));
+    inputteks("Genre         : ", baru->genre, sizeof(baru->genre));
     baru->durasi = inputangka("Durasi (menit): ", 1, 100);
 
     baru->next = NULL;
@@ -154,16 +169,19 @@ void tambahlagu() {
 
     simpanfile();
     printf("\nLagu berhasil ditambahkan!\n");
+    tunggu_enter();
 }
 
 // Tampilkan Playlist
 void tampilplaylist() {
+    system("cls");
     Lagu *temp = head;
 
     if(head == NULL){
         printf("\n============================================\n");
         printf("          PLAYLIST MASIH KOSONG\n");
         printf("============================================\n");
+        tunggu_enter();
         return;
     }
 
@@ -179,7 +197,7 @@ void tampilplaylist() {
 //      printf("---------------------------------------------------------------\n");
         printf("|| Judul     : %s\n", temp->judul);
         printf("|| Penyanyi  : %s\n", temp->penyanyi);
-        printf("|| Album     : %s\n", temp->album);
+        printf("|| Genre     : %s\n", temp->genre);
         printf("|| Durasi    : %d menit\n", temp->durasi);
         printf("\n");
 //      printf("---------------------------------------------------------------\n\n");
@@ -190,44 +208,47 @@ void tampilplaylist() {
     printf("===============================================================\n");
     printf("Total Lagu : %d\n", no - 1);
     printf("Total Durasi : %d menit\n", total_durasi);
+    tunggu_enter();
 }
 
-// Cari Lagu
+// Cari Laguv
 void carilagu() {
+    system("cls");
     char cari[100];
 
-    printf("\nMasukkan Judul Lagu: ");
-    fgets(cari, sizeof(cari), stdin);
-    cari[strcspn(cari, "\n")] = 0;
+    inputteks("\nMasukkan Judul Lagu: ", cari, sizeof(cari));
 
     Lagu *temp = head;
 
     while(temp != NULL){
-        if(strcasecmp(temp->judul, cari) == 0 || strcasecmp(temp->penyanyi, cari) == 0){ //Ganti string ke string case compare supaya tidak case sensitive
+        if(strcasecmp(temp->judul, cari) == 0 || strcasecmp(temp->penyanyi, cari) == 0){
             printf("\nLagu ditemukan!\n");
             printf("Judul    : %s\n", temp->judul);
             printf("Penyanyi : %s\n", temp->penyanyi);
-            printf("Album    : %s\n", temp->album);
+            printf("Genre    : %s\n", temp->genre);
             printf("Durasi   : %d menit\n", temp->durasi);
+
+            tunggu_enter();
             return;
         }
         temp = temp->next;
     }
     printf("\nLagu dengan Judul atau Penyanyi tersebut tidak ditemukan\n");
+    tunggu_enter();
 }
 
 // Update Lagu
 void updatelagu() {
+    system("cls");
     char cari[100];
 
     if(head == NULL){
         printf("\nPlaylist masih kosong!\n");
+        tunggu_enter();
         return;
     }
 
-    printf("\nMasukkan Judul Lagu yang ingin diupdate: ");
-    fgets(cari, sizeof(cari), stdin);
-    cari[strcspn(cari, "\n")] = 0;
+    inputteks("\nMasukkan Judul Lagu yang ingin diupdate: ", cari, sizeof(cari));
 
     Lagu *temp = head;
 
@@ -237,42 +258,34 @@ void updatelagu() {
 
     if(temp == NULL){
         printf("\nLagu tidak ditemukan.\n");
+        tunggu_enter();
         return;
     }
 
     printf("\nData lama:\n");
     printf("Judul    : %s\n", temp->judul);
     printf("Penyanyi : %s\n", temp->penyanyi);
-    printf("Album    : %s\n", temp->album);
+    printf("Genre    : %s\n", temp->genre);
     printf("Durasi   : %d menit\n", temp->durasi);
 
     printf("\nMasukkan data baru\n");
 
-    printf("Judul Lagu    : ");
-    fgets(temp->judul, sizeof(temp->judul), stdin);
-    temp->judul[strcspn(temp->judul, "\n")] = 0;
-
-    printf("Nama Penyanyi : ");
-    fgets(temp->penyanyi, sizeof(temp->penyanyi), stdin);
-    temp->penyanyi[strcspn(temp->penyanyi, "\n")] = 0;
-
-    printf("Nama Album    : ");
-    fgets(temp->album, sizeof(temp->album), stdin);
-    temp->album[strcspn(temp->album, "\n")] = 0;
+    inputteks("Judul Lagu    : ", temp->judul, sizeof(temp->judul));
+    inputteks("Nama Penyanyi : ", temp->penyanyi, sizeof(temp->penyanyi));
+    inputteks("Genre         : ", temp->genre, sizeof(temp->genre));
 
     temp->durasi = inputangka("Durasi (menit): ", 1, 100);
 
     simpanfile();
     printf("\nLagu berhasil diupdate!\n");
+    tunggu_enter();
 }
 
 void hapuslagu() {
     char hapus[100];
     char yakin;
 
-    printf("\nMasukkan Judul Lagu yang ingin dihapus: ");
-    fgets(hapus, sizeof(hapus), stdin);
-    hapus[strcspn(hapus, "\n")] = 0;
+    inputteks("\nMasukkan Judul Lagu yang ingin dihapus: ", hapus, sizeof(hapus));
 
     Lagu *temp = head;
     Lagu *prev = NULL;
@@ -284,43 +297,46 @@ void hapuslagu() {
 
     if(temp == NULL){
         printf("\nLagu tidak ditemukan.\n");
+        tunggu_enter();
         return;
     }
 
     printf("\nData Lagu\n");
     printf("judul    : %s\n", temp->judul);
     printf("Penyanyi : %s\n", temp->penyanyi);
-    printf("Album    : %s\n", temp->album);
+    printf("Genre    : %s\n", temp->genre);
     printf("Durasi   : %d menit\n", temp->durasi);
 
     printf("Yakin ingin menghapus lagu ini? (y/t): ");
-    scanf("%c",&yakin);
+    scanf(" %c",&yakin);
     while(getchar() != '\n');
 
-
     if(yakin == 'y' || yakin == 'Y'){
-    }else{
+        if(prev == NULL){
+            head = temp->next;
+        } else {
+            prev->next = temp->next;
+        }
+
+        free(temp);
+        simpanfile();
+
+        printf("\nLagu berhasil dihapus.\n");
+        tunggu_enter();
+
+    } else {
         printf("Penghapusan dibatalkan.\n");
+        tunggu_enter();
         return;
     }
-
-
-    if(prev == NULL){
-        head = temp->next;
-    } else {
-        prev->next = temp->next;
-    }
-
-    free(temp);
-
-    simpanfile();
-    printf("\nLagu berhasil dihapus.\n");
 }
 
 // Sorting berdasarkan Judul (A-Z)
 void sortingjudul() {
+    system("cls");
     if(head == NULL || head->next == NULL){
         printf("\nData tidak cukup untuk disorting!\n");
+        tunggu_enter();
         return;
     }
 
@@ -329,22 +345,22 @@ void sortingjudul() {
     for(i = head; i->next != NULL; i = i->next){
         for(j = head; j->next != NULL; j = j->next){
             if(strcmp(j->judul, j->next->judul) > 0){
-                char tempJudul[100], tempPenyanyi[100], tempAlbum[100];
+                char tempJudul[100], tempPenyanyi[100], tempGenre[100];
                 int tempDurasi;
 
                 strcpy(tempJudul, j->judul);
                 strcpy(tempPenyanyi, j->penyanyi);
-                strcpy(tempAlbum, j->album);
+                strcpy(tempGenre, j->genre);
                 tempDurasi = j->durasi;
 
                 strcpy(j->judul, j->next->judul);
                 strcpy(j->penyanyi, j->next->penyanyi);
-                strcpy(j->album, j->next->album);
+                strcpy(j->genre, j->next->genre);
                 j->durasi = j->next->durasi;
 
                 strcpy(j->next->judul, tempJudul);
                 strcpy(j->next->penyanyi, tempPenyanyi);
-                strcpy(j->next->album, tempAlbum);
+                strcpy(j->next->genre, tempGenre);
                 j->next->durasi = tempDurasi;
             }
         }
@@ -352,12 +368,15 @@ void sortingjudul() {
 
     simpanfile();
     printf("\nPlaylist berhasil diurutkan berdasarkan judul!\n");
+    tunggu_enter();
 }
 
 // Sorting berdasarkan Durasi (terkecil ke terbesar)
 void sortingdurasi() {
+    system("cls");
     if(head == NULL || head->next == NULL){
         printf("\nData tidak cukup untuk disorting!\n");
+        tunggu_enter();
         return;
     }
 
@@ -366,22 +385,22 @@ void sortingdurasi() {
     for(i = head; i->next != NULL; i = i->next){
         for(j = head; j->next != NULL; j = j->next){
             if(j->durasi > j->next->durasi){
-                char tempJudul[100], tempPenyanyi[100], tempAlbum[100];
+                char tempJudul[100], tempPenyanyi[100], tempGenre[100];
                 int tempDurasi;
 
                 strcpy(tempJudul, j->judul);
                 strcpy(tempPenyanyi, j->penyanyi);
-                strcpy(tempAlbum, j->album);
+                strcpy(tempGenre, j->genre);
                 tempDurasi = j->durasi;
 
                 strcpy(j->judul, j->next->judul);
                 strcpy(j->penyanyi, j->next->penyanyi);
-                strcpy(j->album, j->next->album);
+                strcpy(j->genre, j->next->genre);
                 j->durasi = j->next->durasi;
 
                 strcpy(j->next->judul, tempJudul);
                 strcpy(j->next->penyanyi, tempPenyanyi);
-                strcpy(j->next->album, tempAlbum);
+                strcpy(j->next->genre, tempGenre);
                 j->next->durasi = tempDurasi;
             }
         }
@@ -389,15 +408,15 @@ void sortingdurasi() {
 
     simpanfile();
     printf("\nPlaylist berhasil diurutkan berdasarkan durasi!\n");
+    tunggu_enter();
 }
 
 int main() {
-
     int pilih;
-
     muatdarifile();
 
     do{
+        system("cls");
         printf("\n==============================\n");
         printf("||  MUSIC PLAYLIST MANAGER  ||\n");
         printf("==============================\n");
@@ -443,6 +462,7 @@ int main() {
             break;
 
         case 8:
+            system("cls");
             printf("\nTerima kasih telah menggunakan Music Playlist Manager.\n");
             break;
 
@@ -451,12 +471,13 @@ int main() {
         }
 
     }while(pilih != 8);
+// Pembersihan Memori Linked List sebelum program selesai
+    Lagu *temp;
+    while(head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
 
     return 0;
 }
-
-
-// tambah sleep diakhir pas mau keluar kasih 3 atau 2.5 detik sj
-// tambah CLS
-// tambah proteksi untuk huruf juga
-// ganti album jadi genre sj supaya kalau lagu yg single nggk usah repot
